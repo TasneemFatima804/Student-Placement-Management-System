@@ -10,11 +10,22 @@ using namespace std;
 
 class Student {
 public:
-    int rollNo = 0;
-    string name;
-    string internshipOffer;
-    string placementOffer;
-    string password;
+int rollNo = 0;
+
+string name;
+string department;
+
+float cgpa = 0.0;
+
+string email;
+string phone;
+
+bool placed = false;
+
+string internshipOffer;
+string placementOffer;
+
+string password;
 
     void inputData(const vector<Student>& students) {
         cout << "Enter Roll No: ";
@@ -37,6 +48,35 @@ public:
         do {
             cout << "Enter Name: ";
             getline(cin, name);
+            do {
+        cout << "Enter Department: ";
+        getline(cin, department);
+    }        while (department.empty());
+
+cout << "Enter CGPA: ";
+while (!(cin >> cgpa) || cgpa < 0 || cgpa > 10) {
+    cout << "Invalid CGPA! Enter between 0 and 10: ";
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+do {
+    cout << "Enter Email: ";
+    getline(cin, email);
+} while (email.empty());
+
+do {
+    cout << "Enter Phone Number: ";
+    getline(cin, phone);
+} while (phone.empty());
+
+char status;
+cout << "Is the student placed? (Y/N): ";
+cin >> status;
+cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+placed = (status == 'Y' || status == 'y');
         } while (name.empty());
 
         do {
@@ -56,12 +96,16 @@ public:
     }
 
     void displayData() const {
-        cout << left 
-             << setw(10) << rollNo 
-             << setw(22) << name 
-             << setw(22) << internshipOffer 
-             << setw(22) << placementOffer << endl;
-    }
+
+    cout << left
+         << setw(8)  << rollNo
+         << setw(20) << name
+         << setw(15) << department
+         << setw(8)  << fixed << setprecision(2) << cgpa
+         << setw(15) << phone
+         << setw(12) << (placed ? "Placed" : "Not Placed")
+         << endl;
+}
 };
 
 class Faculty {
@@ -162,13 +206,18 @@ void saveToCSV(const vector<Student>& students) {
         cout << "Error opening file for writing!\n";
         return;
     }
-    file << "Roll No,Name,Internship Offer,Placement Offer,Password\n";
+    file << "RollNo,Name,Department,CGPA,Email,Phone,Placed,Internship,Placement,Password\n";
     for (const auto& s : students) {
         file << s.rollNo << ","
-             << s.name << ","
-             << s.internshipOffer << ","
-             << s.placementOffer << ","
-             << s.password << "\n";
+     << s.name << ","
+     << s.department << ","
+     << s.cgpa << ","
+     << s.email << ","
+     << s.phone << ","
+     << s.placed << ","
+     << s.internshipOffer << ","
+     << s.placementOffer << ","
+     << s.password << "\n";
     }
 }
 
@@ -197,9 +246,22 @@ vector<Student> loadFromCSV() {
         }
 
         getline(ss, s.name, ',');
-        getline(ss, s.internshipOffer, ',');
-        getline(ss, s.placementOffer, ',');
-        getline(ss, s.password); // Read remaining line for password
+getline(ss, s.department, ',');
+
+string cgpaStr;
+getline(ss, cgpaStr, ',');
+s.cgpa = stof(cgpaStr);
+
+getline(ss, s.email, ',');
+getline(ss, s.phone, ',');
+
+string placedStr;
+getline(ss, placedStr, ',');
+s.placed = (placedStr == "1");
+
+getline(ss, s.internshipOffer, ',');
+getline(ss, s.placementOffer, ',');
+getline(ss, s.password);
 
         // Trim trailing carriage return if running on Windows/DOS newline files
         if (!s.password.empty() && s.password.back() == '\r') {
@@ -217,12 +279,16 @@ void viewStudents(const vector<Student>& students) {
         return;
     }
 
-    cout << left 
-         << setw(10) << "Roll No" 
-         << setw(22) << "Name" 
-         << setw(22) << "Internship Offer" 
-         << setw(22) << "Placement Offer" << endl;
-    cout << string(76, '-') << endl;
+    cout << left
+     << setw(8)  << "Roll"
+     << setw(20) << "Name"
+     << setw(15) << "Department"
+     << setw(8)  << "CGPA"
+     << setw(15) << "Phone"
+     << setw(12) << "Status"
+     << endl;
+
+cout << string(78, '-') << endl;
 
     for (const auto& s : students) {
         s.displayData();

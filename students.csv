@@ -1,4 +1,3 @@
-Roll No,Name,Internship Offer,Placement Offer,Password
-6,tasneem,yes,microsoft 15lakhs,,tasneem
-9,shrutika,no,google 8lakhs,,shrutika
-17,khushi,yes,oracle 8lakhs,khushi
+RollNo,Name,Department,CGPA,Email,Phone,Placed,Internship,Placement,Password
+6,tasneem fatima,CSBS,10,razdajnv1@gmail.com,7974265967,0,TCS,not placed,tasneem
+9,shrutika,CE,9.5,shru1@gmail.com,9876450378,1,microsoft,microsfot SDE,shrutika
